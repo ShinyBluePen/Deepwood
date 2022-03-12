@@ -4,59 +4,71 @@
 # 26 FEB 2022
 
 import pygame
-import pygame_gui
 
-import os
-import time
 import random
+import time
+import sys
+import os
 
-import settings
-import creatures
-import skills
-import items
-import light
-import world
+from settings import *
+from world import World
+from creature import Creature
 
-pygame.init()
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.screen     = WINDOW
+        self.icon       = ICON
+        self.caption    = MAIN_MENU_SPLASH
+        self.clock      = CLOCK
+        self.start_game = True
+        self.game_over  = False
+        self.world      = World()
 
+    def draw(self):
+        # Window
+        fps          = round(self.clock.get_fps(), 2)
+        location     = LOCATION_LIST[0]
+        self.caption = pygame.display.set_caption(f"Deepwood - {location} - [{fps}]")
 
-def redraw_window():
-    settings.WINDOW.blit()
-    pygame.display.update()
-
-manager = pygame_gui.UIManager((settings.WIDTH, settings.HEIGHT))
-
-def main():
-    pygame.display.set_caption("Deepwood")
-    redraw_window()
-
-    game_over = False
-    player = creatures.Player(200, 200)
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                quit()
-
-        settings.CLOCK.tick(settings.FPS)
+        # Graphics
+        self.screen.fill("black")
+        self.world.draw()
         pygame.display.update()
 
-        if game_over == True:
-            main_menu()
+    def main_menu(self):
+        while True:
+            self.draw()
+            self.clock.tick(FPS)
 
-        keys = pygame.key.get_pressed()
-        creatures.player_movement(keys, player)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
+            if self.start_game:
+                self.run()
 
-def main_menu():
-    start_game = False
+    def run(self):
+        while True:
+            self.draw()
+            self.clock.tick(FPS)
 
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                quit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                # if event.type == pygame.KEYDOWN:
+                #     if event.key == pygame.K_m:
+                #         self.world.toggle_menu()
 
-        if start_game == True:
-            main()
+            if self.game_over:
+                self.game_over = False
+                self.main_menu()
 
-main_menu()
+def main():
+    Deepwood = Game()
+    Deepwood.main_menu()
+
+if __name__ == "__main__":
+    main()

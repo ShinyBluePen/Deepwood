@@ -3,7 +3,5 @@ import pygame
 
 from settings import *
 
-
-class Light:
+class UI:
     pass
-
