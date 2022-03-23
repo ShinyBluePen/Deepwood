@@ -1,7 +1,5 @@
 
-import pygame
-
-from settings import *
+from data import *
 from creature import Creature
 
 class Animal(Creature):

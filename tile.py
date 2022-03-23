@@ -1,26 +1,28 @@
 
-import pygame
+from settings import pygame
 
-from settings import *
+from settings import TILESIZE
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, sprite):
+    def __init__(self, pos = (0, 0), groups = [], sprite_type = "", sprite = pygame.Surface((TILESIZE, TILESIZE))):
         super().__init__(groups)
+        self.sprite_type = sprite_type
         self.image = sprite
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(-10, -10)
 
-        self.boundary = bool
+        if sprite_type == "tree":
+            # Do an offset
+            self.rect = self.image.get_rect(topleft= (pos[0], pos[1] - TILESIZE))
+            self.hitbox = self.rect.inflate(-10, -TILESIZE-10)
 
 # class Rock(Tile):
-#     def __init__(self, pos, groups, sprite):
-#         super().__init__(pos, groups, sprite)
-#         pos    = self.rect
-#         groups = [self.visible_sprites, self.obstacle_sprites]
-#         sprite = rock_sprite
+#     def __init__(self, pos = (0, 0), groups = []):
+#         super().__init__(groups)
+#         self.image = rock_sprite
 #
-#         Tile(pos, groups, sprite)
+#         Tile(pos, groups, self.image)
 
 # class tree(Tile):
 #     def __init__(self, pos, groups, sprite):

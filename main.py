@@ -3,24 +3,22 @@
 # Michael D. Petty
 # 26 FEB 2022
 
-import pygame
-
-import random
-import time
-import sys
-import os
-
 from settings import *
+#   pygame
+#   random
+#   time
+#   sys
+#   os.path.join() as jn
 from world import World
-from creature import Creature
+
 
 class Game:
     def __init__(self):
         pygame.init()
         self.screen     = WINDOW
+        self.clock      = CLOCK
         self.icon       = ICON
         self.caption    = MAIN_MENU_SPLASH
-        self.clock      = CLOCK
         self.start_game = True
         self.game_over  = False
         self.world      = World()
@@ -32,7 +30,7 @@ class Game:
         self.caption = pygame.display.set_caption(f"Deepwood - {location} - [{fps}]")
 
         # Graphics
-        self.screen.fill("black")
+        self.screen.fill((113, 221, 238))
         self.world.draw()
         pygame.display.update()
 
@@ -65,6 +63,8 @@ class Game:
             if self.game_over:
                 self.game_over = False
                 self.main_menu()
+
+            # Debugging
 
 def main():
     Deepwood = Game()
