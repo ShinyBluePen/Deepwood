@@ -1,7 +1,6 @@
 
 
-from settings import pygame
-from settings import random
+from settings import pygame, random
 
 from data import GRAPHICS
 

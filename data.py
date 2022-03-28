@@ -1,10 +1,9 @@
 
-from settings import pygame
-from settings import jn
 
-from support import import_csv_layout
-from support import import_folder
-from support import reflect
+from settings import pygame, jn
+
+from support import import_csv_layout, import_folder, reflect
+
 
 ###################
 # Sprite settings #
@@ -122,9 +121,9 @@ monster_data = {
         'exp': 100,
         'damage': 10,
         'attack_type': 'slash',
-        'attack_sound': '../audio/attack/slash.wav',
+        'attack_sound': jn("assets", jn("audio", jn("attack", "slash.wav"))),
         'speed': 3,
-        'resistance': 0.8,
+        'resistance': 1.5,
         'attack_radius': 80,
         'notice_radius': 300
         },
@@ -133,9 +132,9 @@ monster_data = {
         'exp': 250,
         'damage': 40,
         'attack_type': 'claw',
-        'attack_sound': '../audio/attack/claw.wav',
+        'attack_sound': jn("assets", jn("audio", jn("attack", "claw.wav"))),
         'speed': 2,
-        'resistance': 0.3,
+        'resistance': 1.5,
         'attack_radius': 120,
         'notice_radius': 300
         },
@@ -144,9 +143,9 @@ monster_data = {
         'exp': 110,
         'damage': 8,
         'attack_type': 'thunder',
-        'attack_sound': '../audio/attack/fireball.wav',
+        'attack_sound': jn("assets", jn("audio", jn("attack", "fireball.wav"))),
         'speed': 4,
-        'resistance': 0.2,
+        'resistance': 1.5,
         'attack_radius': 60,
         'notice_radius': 300
         },
@@ -155,9 +154,9 @@ monster_data = {
         'exp': 120,
         'damage': 6,
         'attack_type': 'leaf_attack',
-        'attack_sound': '../audio/attack/slash.wav',
+        'attack_sound': jn("assets", jn("audio", jn("attack", "slash.wav"))),
         'speed': 2,
-        'resistance': 0.3,
+        'resistance': 1.5,
         'attack_radius': 50,
         'notice_radius': 150
         }
@@ -165,33 +164,55 @@ monster_data = {
 
 # weapons
 weapon_data = {
-    'sword':  {'cooldown': 400, 'damage': 15, 'graphic': GRAPHICS["weapons"]["sword"][1]},
-    'lance':  {'cooldown': 800, 'damage': 30, 'graphic': GRAPHICS["weapons"]["lance"][1]},
-    'axe':    {'cooldown': 600, 'damage': 20, 'graphic': GRAPHICS["weapons"]["axe"][1]},
-    'rapier': {'cooldown': 200,  'damage': 10, 'graphic': GRAPHICS["weapons"]["rapier"][1]},
-    'sai':    {'cooldown': 0,  'damage': 5,  'graphic': GRAPHICS["weapons"]["sai"][1]}
+    'sword': {
+        'cooldown': 400,
+        'damage': 15,
+        'graphic': GRAPHICS["weapons"]["sword"][1]
+        },
+    'lance': {
+        'cooldown': 800,
+        'damage': 30,
+        'graphic': GRAPHICS["weapons"]["lance"][1]
+        },
+    'axe': {
+        'cooldown': 600,
+        'damage': 20,
+        'graphic': GRAPHICS["weapons"]["axe"][1]
+        },
+    'rapier': {
+        'cooldown': 200,
+        'damage': 10,
+        'graphic': GRAPHICS["weapons"]["rapier"][1]
+        },
+    'sai': {
+        'cooldown': 0,
+        'damage': 5,
+        'graphic': GRAPHICS["weapons"]["sai"][1]
+        }
     }
 
 # magic
 magic_data = {
-    'flame': {'strength': 5,  'cost': 20, 'graphic': GRAPHICS["magic"]["flame"]},
-    'heal':  {'strength': 10, 'cost': 10, 'graphic': GRAPHICS["magic"]["heal"]}
+    'flame': {
+        'strength': 5,
+        'cost': 20,
+        'graphic': GRAPHICS["magic"]["flame"]
+        },
+    'heal': {
+        'strength': 10,
+        'cost': 10,
+        'graphic': GRAPHICS["magic"]["heal"]
+        }
     }
 
 # player
 player_data = {
-    # base stat dict
-
-    # current stat dict
-    "hp": 100,
-    "mp": 60,
+    "hp": 30,
+    "mp": 15,
     "atk": 10,
-    "mgk": 5,
+    "mgk": 10,
     "speed": 3
-    # max stat dict
-
     }
-
 
 # todo
 

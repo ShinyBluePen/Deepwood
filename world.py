@@ -1,27 +1,56 @@
 
-from settings import pygame
-from settings import random
 
-from settings import TILESIZE
+from settings import pygame, random, TILESIZE
 
-from data import player_sprite
-from data import world_floor
-from data import LAYOUTS
-from data import GRAPHICS
+from data import player_sprite, world_floor, LAYOUTS, GRAPHICS
 
 from ui import UI
 
 from tile import Tile
+
 from item import Weapon
-from creature import Enemy
-from player import Player
+
+from creature import Enemy, Player
+
 from particles import AnimationPlayer
+
 from magic import Magic
+
+from upgrade import Upgrade
 
 
 class World:
+    """
+    Create and update the world and all objects within.  Manage interactions that happen within the world environment.
+
+        Returns:
+            World object \n
+
+        Functions:
+            create_world, \n
+            attack_create, \n
+            player_attack_logic, \n
+            attack_destroy, \n
+            magic_create(style, strength, cost), \n
+            damage_player(amount, style, attack_type), \n
+            death_particles(pos, particle_type, frames), \n
+            draw
+
+        Attributes:
+            display_surface, \n
+            visible_sprites, \n
+            obstacle_sprites, \n
+            attack_current, \n
+            attack_sprites, \n
+            attackable_sprites, \n
+            create_world, \n
+            ui, \n
+            animation_player, \n
+            magic_player
+    """
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
+        self.game_paused = False
 
         # Sprite group setup
         self.visible_sprites = Y_Sort_Camera_Group()
@@ -37,10 +66,15 @@ class World:
 
         # ui
         self.ui = UI()
+        self.upgrade = Upgrade(self.player)
 
         # particles
         self.animation_player = AnimationPlayer()
         self.magic_player = Magic(self.animation_player)
+
+        # cooldowns
+        self.collide_last = None
+        self.collide_cooldown = 400
 
     def create_world(self):
         for style, layout in LAYOUTS.items():
@@ -59,7 +93,7 @@ class World:
 
                         if style == "object":
                             surface = GRAPHICS["object"][int(col)]
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites, self.attackable_sprites], "tree", surface)
+                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites, self.attackable_sprites], "object", surface)
 
                         if style == "creature":
                             if col == "394":
@@ -71,7 +105,6 @@ class World:
                                     self.attack_create,
                                     self.attack_destroy,
                                     self.magic_create,
-                                    # self.magic_destroy,
                                     )
                             else:
                                 if col == "390":
@@ -90,6 +123,7 @@ class World:
                                     self.obstacle_sprites,
                                     self.damage_player,
                                     self.death_particles,
+                                    self.add_potential,
                                     )
 
     def attack_create(self):
@@ -99,19 +133,22 @@ class World:
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
                 collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+
                 if collision_sprites:
                     for target_sprite in collision_sprites:
+                        pos = target_sprite.rect.center
+
                         if target_sprite.sprite_type == "grass":
-                            pos = target_sprite.rect.center
                             for leaf in range(random.randint(3, 6)):
                                 offset = pygame.math.Vector2(0, 64)
                                 self.animation_player.create_grass_particles(pos - offset, [self.visible_sprites])
                             target_sprite.kill()
-                        elif target_sprite.sprite_type == "tree":
-                            pos = target_sprite.rect.center
-                            for leaf in range(random.randint(0, 1)):
+
+                        elif target_sprite.sprite_type == "object":
+                            for leaf in range(random.randint(0, 0)):
                                 offset = pygame.math.Vector2(random.randint(-64, 64), random.randint(-10, 54))
                                 self.animation_player.create_grass_particles(pos - offset, [self.visible_sprites])
+
                         else:
                             target_sprite.get_damage(self.player, attack_sprite.sprite_type)
 
@@ -142,16 +179,45 @@ class World:
     def death_particles(self, pos, particle_type, frames):
         self.animation_player.create_particles(pos, particle_type, frames, [self.visible_sprites])
 
+    def add_potential(self, amount):
+        self.player.potential += amount
+
+    def toggle_menu(self):
+        # flip bool value
+        self.game_paused = not self.game_paused
+
     def draw(self):
-        # Debug().debug(self.player.magic_create.style)
-        self.player.update()
         self.visible_sprites.camera(self.player)
-        self.visible_sprites.update()
-        self.visible_sprites.enemy_update(self.player)
-        self.player_attack_logic()
         self.ui.display(self.player)
 
+        if self.game_paused:
+            self.upgrade.display()
+        else:
+            # Debug().debug(self.player.magic_create.style)
+            self.player.update()
+            self.visible_sprites.update()
+            self.visible_sprites.enemy_update(self.player)
+            self.player_attack_logic()
+
 class Y_Sort_Camera_Group(pygame.sprite.Group):
+    """
+    Sort objects by their Y position and draw lower Y objects over higher Y value objects.
+
+        Returns:
+            None
+
+        Functions:
+            camera(player) \n
+            enemy_update(player) \n
+
+        Attributes:
+            display_surface \n
+            half_width \n
+            half_height \n
+            offset \n
+            floor_surface \n
+            floor_rect \n
+    """
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.get_surface()

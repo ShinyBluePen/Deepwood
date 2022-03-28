@@ -3,8 +3,8 @@ from data import *
 from creature import Creature
 
 class Animal(Creature):
-    def __init__(self, pos, groups, sprite):
-        super().__init__(pos, groups, sprite)
+    def __init__(self, pos, groups, image):
+        super().__init__(pos, groups, image)
 
     def deer(self):
         self.image = deer_sprite
@@ -18,7 +18,7 @@ class Animal(Creature):
 
     def bird(self):
         self.image = bird_sprite
-        self.description = "A colourful songbird.  It is singing a lovely song!"
+        self.description = "A colourful songbird.  It's singing a lovely song!"
 
     def frog(self):
         self.image = frog_sprite

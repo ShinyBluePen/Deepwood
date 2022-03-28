@@ -1,6 +1,6 @@
 
-from settings import pygame
-from settings import jn
+from settings import pygame, jn
+
 from os import walk
 
 from csv import reader
